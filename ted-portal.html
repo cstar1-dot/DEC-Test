@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TED Patient Portal | Electronic Health Record</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #2a2a2a;
+            background: #f5f5f5;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        .ehr-header {
+            background: linear-gradient(135deg, #1a2e4a 0%, #2d4a69 100%);
+            color: white;
+            padding: 20px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: #c9a961;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            letter-spacing: 0.05em;
+        }
+
+        .header-patient {
+            text-align: right;
+        }
+
+        .patient-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .patient-id {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .ehr-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+        }
+
+        /* Sidebar Navigation */
+        .ehr-sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            height: fit-content;
+            position: sticky;
+            top: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .nav-item:last-child {
+            border-bottom: none;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: #2a2a2a;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #f8f6f3;
+            color: #2c7a8c;
+        }
+
+        .nav-link.active {
+            border-left: 4px solid #2c7a8c;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content Area */
+        .ehr-main {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-header h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: #1a2e4a;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: #5a5a5a;
+            font-size: 0.95rem;
+        }
+
+        /* Alert Banner */
+        .alert-banner {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 16px 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-banner.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .alert-banner.info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+
+        .alert-icon {
+            font-size: 1.4rem;
+        }
+
+        .alert-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .alert-content p {
+            font-size: 0.85rem;
+            color: #5a5a5a;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, #2c7a8c, #4a9aa8);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card.secondary {
+            background: linear-gradient(135deg, #c9a961, #d4b574);
+            color: #1a2e4a;
+        }
+
+        .dashboard-card.neutral {
+            background: #f8f6f3;
+            color: #2a2a2a;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .card-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .card-detail {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        /* Treatment Timeline */
+        .treatment-timeline {
+            background: #f8f6f3;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .timeline-header h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: #1a2e4a;
+        }
+
+        .timeline-progress {
+            text-align: right;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: #5a5a5a;
+            margin-bottom: 4px;
+        }
+
+        .progress-percent {
+            font-weight: 600;
+            color: #2c7a8c;
+            font-size: 1.1rem;
+        }
+
+        .infusion-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+        }
+
+        .infusion-item {
+            text-align: center;
+        }
+
+        .infusion-circle {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #999;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .infusion-circle:hover {
+            transform: scale(1.05);
+        }
+
+        .infusion-circle.completed {
+            background: #2c7a8c;
+            color: white;
+        }
+
+        .infusion-circle.completed::after {
+            content: '✓';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #28a745;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            border: 2px solid white;
+        }
+
+        .infusion-circle.current {
+            background: #c9a961;
+            color: #1a2e4a;
+            box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(201, 169, 97, 0.1); }
+        }
+
+        .infusion-label {
+            font-size: 0.75rem;
+            color: #5a5a5a;
+            font-weight: 500;
+        }
+
+        .infusion-date {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* Clinical Measurements */
+        .measurements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .measurement-card {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .measurement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .measurement-title {
+            font-weight: 600;
+            color: #1a2e4a;
+            font-size: 1rem;
+        }
+
+        .measurement-trend {
+            font-size: 1.2rem;
+        }
+
+        .trend-improving {
+            color: #28a745;
+        }
+
+        .trend-stable {
+            color: #ffc107;
+        }
+
+        .trend-concerning {
+            color: #dc3545;
+        }
+
+        .measurement-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c7a8c;
+            margin-bottom: 8px;
+        }
+
+        .measurement-detail {
+            font-size: 0.85rem;
+            color: #5a5a5a;
+        }
+
+        .measurement-history {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.85rem;
+        }
+
+        .history-date {
+            color: #999;
+        }
+
+        .history-value {
+            font-weight: 600;
+            color: #2a2a2a;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .data-table thead {
+            background: #f8f6f3;
+        }
+
+        .data-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #1a2e4a;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.scheduled {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.active {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Symptom Logger */
+        .symptom-logger {
+            background: #f8f6f3;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .symptom-item {
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .symptom-name {
+            font-size: 0.9rem;
+            color: #2a2a2a;
+        }
+
+        .severity-indicator {
+            display: flex;
+            gap: 4px;
+        }
+
+        .severity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e0e0e0;
+        }
+
+        .severity-dot.active {
+            background: #2c7a8c;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #2c7a8c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #23626f;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2c7a8c;
+            border: 2px solid #2c7a8c;
+        }
+
+        .btn-secondary:hover {
+            background: #2c7a8c;
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #5a5a5a;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-outline:hover {
+            border-color: #2c7a8c;
+            color: #2c7a8c;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: linear-gradient(135deg, #1a2e4a, #2d4a69);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .quick-actions h3 {
+            color: white;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .quick-action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .quick-action-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 16px 20px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(4px);
+        }
+
+        .quick-action-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Notes Section */
+        .notes-section {
+            background: #fffbf0;
+            border: 2px solid #c9a961;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .notes-section h4 {
+            color: #1a2e4a;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        .note-item {
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .note-author {
+            font-weight: 600;
+            color: #2c7a8c;
+            font-size: 0.9rem;
+        }
+
+        .note-date {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .note-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #2a2a2a;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .ehr-container {
+                grid-template-columns: 1fr;
+            }
+
+            .ehr-sidebar {
+                position: static;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .nav-item {
+                border-bottom: none;
+                border-right: 1px solid #f0f0f0;
+            }
+
+            .nav-item:last-child {
+                border-right: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ehr-header {
+                padding: 16px 4%;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .header-patient {
+                text-align: center;
+            }
+
+            .ehr-container {
+                margin: 20px auto;
+                padding: 0 4%;
+                gap: 20px;
+            }
+
+            .ehr-main {
+                padding: 20px;
+            }
+
+            .infusion-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .infusion-circle {
+                width: 45px;
+                height: 45px;
+                font-size: 0.95rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .measurements-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .sidebar-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                border-right: none;
+                border-bottom: 1px solid #f0f0f0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.6rem;
+            }
+
+            .card-value {
+                font-size: 1.8rem;
+            }
+
+            .infusion-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="ehr-header">
+        <div class="header-content">
+            <div class="header-logo">
+                <div class="logo-icon">👁️</div>
+                <div class="logo-text">
+                    <h1>TED Patient Portal</h1>
+                    <p>Electronic Health Record System</p>
+                </div>
+            </div>
+            <div class="header-patient">
+                <div class="patient-name">Sarah Johnson</div>
+                <div class="patient-id">Patient ID: TED-2024-00847 | DOB: 04/15/1978</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="ehr-container">
+        <!-- Sidebar Navigation -->
+        <aside class="ehr-sidebar">
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#treatment" class="nav-link">
+                        <span class="nav-icon">💊</span>
+                        Treatment
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#measurements" class="nav-link">
+                        <span class="nav-icon">📏</span>
+                        Measurements
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#labs" class="nav-link">
+                        <span class="nav-icon">🧪</span>
+                        Lab Results
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#imaging" class="nav-link">
+                        <span class="nav-icon">📷</span>
+                        Imaging
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#symptoms" class="nav-link">
+                        <span class="nav-icon">📝</span>
+                        Symptoms
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#appointments" class="nav-link">
+                        <span class="nav-icon">📅</span>
+                        Appointments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#documents" class="nav-link">
+                        <span class="nav-icon">📄</span>
+                        Documents
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#messages" class="nav-link">
+                        <span class="nav-icon">💬</span>
+                        Messages
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="ehr-main">
+            <!-- Section Header -->
+            <div class="section-header" id="dashboard">
+                <h2>Patient Dashboard</h2>
+                <p>Overview of your thyroid eye disease treatment and health status</p>
+            </div>
+
+            <!-- Alert Banner -->
+            <div class="alert-banner info">
+                <span class="alert-icon">📅</span>
+                <div class="alert-content">
+                    <h4>Next Infusion Scheduled</h4>
+                    <p>Your 4th TEPEZZA infusion is scheduled for March 19, 2026 at 10:00 AM at Luxe Infusions - Raleigh</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">💊</div>
+                    <div class="card-label">Treatment Progress</div>
+                    <div class="card-value">3/8</div>
+                    <div class="card-detail">Infusions Completed (37.5%)</div>
+                </div>
+
+                <div class="dashboard-card secondary">
+                    <div class="card-icon">📉</div>
+                    <div class="card-label">Proptosis Reduction</div>
+                    <div class="card-value">2.5 mm</div>
+                    <div class="card-detail">Improved from baseline</div>
+                </div>
+
+                <div class="dashboard-card neutral">
+                    <div class="card-icon">📊</div>
+                    <div class="card-label">CAS Score</div>
+                    <div class="card-value">2/7</div>
+                    <div class="card-detail">Inactive disease (improved from 5)</div>
+                </div>
+
+                <div class="dashboard-card neutral">
+                    <div class="card-icon">📅</div>
+                    <div class="card-label">Days in Treatment</div>
+                    <div class="card-value">63</div>
+                    <div class="card-detail">84 days remaining</div>
+                </div>
+            </div>
+
+            <!-- TEPEZZA Treatment Timeline -->
+            <div class="treatment-timeline" id="treatment">
+                <div class="timeline-header">
+                    <h3>TEPEZZA Treatment Schedule</h3>
+                    <div class="timeline-progress">
+                        <div class="progress-text">Treatment Progress</div>
+                        <div class="progress-percent">37.5% Complete</div>
+                    </div>
+                </div>
+
+                <div class="infusion-grid">
+                    <div class="infusion-item">
+                        <div class="infusion-circle completed">1</div>
+                        <div class="infusion-label">Week 0</div>
+                        <div class="infusion-date">Jan 15, 2026</div>
+                    </div>
+                    <div class="infusion-item">
+                        <div class="infusion-circle completed">2</div>
+                        <div class="infusion-label">Week 3</div>
+                        <div class="infusion-date">Feb 5, 2026</div>
+                    </div>
+                    <div class="infusion-item">
+                        <div class="infusion-circle completed">3</div>
+                        <div class="infusion-label">Week 6</div>
+                        <div class="infusion-date">Feb 26, 2026</div>
+                    </div>
+                    <div class="infusion-item">
+                        <div class="infusion-circle current">4</div>
+                        <div class="infusion-label">Week 9</div>
+                        <div class="infusion-date">Mar 19, 2026</div>
+                    </div>
+                    <div class="infusion-item">
+                        <div class="infusion-circle">5</div>
+                        <div class="infusion-label">Week 12</div>
+                        <div class="infusion-date">Apr 9, 2026</div>
+                    </div>
+                    <div class="infusion-item">
+                        <div class="infusion-circle">6</div>
+                        <div class="infusion-label">Week 15</div>
+                        <div class="infusion-date">Apr 30, 2026</div>
+                    </div>
+                    <div class="infusion-item">
+                        <div class="infusion-circle">7</div>
+                        <div class="infusion-label">Week 18</div>
+                        <div class="infusion-date">May 21, 2026</div>
+                    </div>
+                    <div class="infusion-item">
+                        <div class="infusion-circle">8</div>
+                        <div class="infusion-label">Week 21</div>
+                        <div class="infusion-date">Jun 11, 2026</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="quick-action-grid">
+                    <a href="#" class="quick-action-btn">
+                        <span class="quick-action-icon">📝</span>
+                        Log Symptoms
+                    </a>
+                    <a href="#" class="quick-action-btn">
+                        <span class="quick-action-icon">📅</span>
+                        Schedule Appointment
+                    </a>
+                    <a href="#" class="quick-action-btn">
+                        <span class="quick-action-icon">💬</span>
+                        Message Provider
+                    </a>
+                    <a href="#" class="quick-action-btn">
+                        <span class="quick-action-icon">📥</span>
+                        Request Records
+                    </a>
+                </div>
+            </div>
+
+            <!-- Clinical Measurements -->
+            <div id="measurements">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1a2e4a; margin-bottom: 20px;">Clinical Measurements</h3>
+
+                <div class="measurements-grid">
+                    <div class="measurement-card">
+                        <div class="measurement-header">
+                            <span class="measurement-title">Proptosis (OD)</span>
+                            <span class="measurement-trend trend-improving">&#8595;</span>
+                        </div>
+                        <div class="measurement-value">19.5 mm</div>
+                        <div class="measurement-detail">Baseline: 22.0 mm | Reduction: 2.5 mm</div>
+                        <div class="measurement-history">
+                            <div class="history-item">
+                                <span class="history-date">Feb 26, 2026</span>
+                                <span class="history-value">20.0 mm</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Feb 5, 2026</span>
+                                <span class="history-value">21.0 mm</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Jan 15, 2026</span>
+                                <span class="history-value">22.0 mm</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="measurement-card">
+                        <div class="measurement-header">
+                            <span class="measurement-title">Proptosis (OS)</span>
+                            <span class="measurement-trend trend-improving">&#8595;</span>
+                        </div>
+                        <div class="measurement-value">18.0 mm</div>
+                        <div class="measurement-detail">Baseline: 20.5 mm | Reduction: 2.5 mm</div>
+                        <div class="measurement-history">
+                            <div class="history-item">
+                                <span class="history-date">Feb 26, 2026</span>
+                                <span class="history-value">18.5 mm</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Feb 5, 2026</span>
+                                <span class="history-value">19.5 mm</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Jan 15, 2026</span>
+                                <span class="history-value">20.5 mm</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="measurement-card">
+                        <div class="measurement-header">
+                            <span class="measurement-title">CAS Score</span>
+                            <span class="measurement-trend trend-improving">&#8595;</span>
+                        </div>
+                        <div class="measurement-value">2/7</div>
+                        <div class="measurement-detail">Inactive disease | Previous: 5/7</div>
+                        <div class="measurement-history">
+                            <div class="history-item">
+                                <span class="history-date">Feb 26, 2026</span>
+                                <span class="history-value">3/7</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Feb 5, 2026</span>
+                                <span class="history-value">4/7</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Jan 15, 2026</span>
+                                <span class="history-value">5/7</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="measurement-card">
+                        <div class="measurement-header">
+                            <span class="measurement-title">Diplopia Score</span>
+                            <span class="measurement-trend trend-improving">&#8595;</span>
+                        </div>
+                        <div class="measurement-value">1</div>
+                        <div class="measurement-detail">Intermittent | Previous: Constant (3)</div>
+                        <div class="measurement-history">
+                            <div class="history-item">
+                                <span class="history-date">Feb 26, 2026</span>
+                                <span class="history-value">2</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Feb 5, 2026</span>
+                                <span class="history-value">2</span>
+                            </div>
+                            <div class="history-item">
+                                <span class="history-date">Jan 15, 2026</span>
+                                <span class="history-value">3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lab Results -->
+            <div id="labs">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1a2e4a; margin: 30px 0 20px;">Recent Lab Results</h3>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Test</th>
+                            <th>Result</th>
+                            <th>Reference Range</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TSH</td>
+                            <td><strong>1.8 &micro;IU/mL</strong></td>
+                            <td>0.4 - 4.0</td>
+                            <td>Feb 26, 2026</td>
+                            <td><span class="status-badge completed">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Free T4</td>
+                            <td><strong>1.2 ng/dL</strong></td>
+                            <td>0.8 - 1.8</td>
+                            <td>Feb 26, 2026</td>
+                            <td><span class="status-badge completed">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td>TSH Receptor Ab</td>
+                            <td><strong>2.5 IU/L</strong></td>
+                            <td>&lt;0.9 (negative)</td>
+                            <td>Feb 26, 2026</td>
+                            <td><span class="status-badge active">Positive</span></td>
+                        </tr>
+                        <tr>
+                            <td>CBC</td>
+                            <td><strong>WNL</strong></td>
+                            <td>See full report</td>
+                            <td>Feb 26, 2026</td>
+                            <td><span class="status-badge completed">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td>CMP</td>
+                            <td><strong>WNL</strong></td>
+                            <td>See full report</td>
+                            <td>Feb 26, 2026</td>
+                            <td><span class="status-badge completed">Normal</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Symptom Logger -->
+            <div id="symptoms">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1a2e4a; margin: 30px 0 20px;">Current Symptoms</h3>
+
+                <div class="symptom-logger">
+                    <div class="symptom-grid">
+                        <div class="symptom-item">
+                            <span class="symptom-name">Eye Pain</span>
+                            <div class="severity-indicator">
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                            </div>
+                        </div>
+                        <div class="symptom-item">
+                            <span class="symptom-name">Double Vision</span>
+                            <div class="severity-indicator">
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                            </div>
+                        </div>
+                        <div class="symptom-item">
+                            <span class="symptom-name">Eye Redness</span>
+                            <div class="severity-indicator">
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                            </div>
+                        </div>
+                        <div class="symptom-item">
+                            <span class="symptom-name">Swelling</span>
+                            <div class="severity-indicator">
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                            </div>
+                        </div>
+                        <div class="symptom-item">
+                            <span class="symptom-name">Light Sensitivity</span>
+                            <div class="severity-indicator">
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                            </div>
+                        </div>
+                        <div class="symptom-item">
+                            <span class="symptom-name">Dry Eyes</span>
+                            <div class="severity-indicator">
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot active"></span>
+                                <span class="severity-dot"></span>
+                                <span class="severity-dot"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary">📝 Update Symptoms</button>
+                    <button class="btn btn-secondary">📊 View Symptom History</button>
+                </div>
+            </div>
+
+            <!-- Upcoming Appointments -->
+            <div id="appointments">
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: #1a2e4a; margin: 30px 0 20px;">Upcoming Appointments</h3>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date &amp; Time</th>
+                            <th>Type</th>
+                            <th>Provider</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Mar 19, 2026 10:00 AM</strong></td>
+                            <td>TEPEZZA Infusion #4</td>
+                            <td>Infusion Nursing Team</td>
+                            <td>Luxe Infusions - Raleigh</td>
+                            <td><span class="status-badge scheduled">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mar 26, 2026 2:00 PM</strong></td>
+                            <td>Follow-up Exam</td>
+                            <td>Dr. Zaldivar</td>
+                            <td>NC Surgery</td>
+                            <td><span class="status-badge scheduled">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Apr 9, 2026 10:00 AM</strong></td>
+                            <td>TEPEZZA Infusion #5</td>
+                            <td>Infusion Nursing Team</td>
+                            <td>Luxe Infusions - Raleigh</td>
+                            <td><span class="status-badge scheduled">Confirmed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary">📅 Schedule New Appointment</button>
+                    <button class="btn btn-outline">📄 View All Appointments</button>
+                </div>
+            </div>
+
+            <!-- Provider Notes -->
+            <div class="notes-section">
+                <h4>Recent Provider Notes</h4>
+
+                <div class="note-item">
+                    <div class="note-header">
+                        <span class="note-author">Dr. Zaldivar, MD</span>
+                        <span class="note-date">Feb 26, 2026</span>
+                    </div>
+                    <div class="note-content">
+                        Patient showing excellent response to TEPEZZA therapy. Proptosis decreased bilaterally by 2.5mm. CAS score improved from 5/7 to 2/7, indicating transition to inactive disease. Diplopia significantly improved - now intermittent vs constant. Patient reports improved quality of life and decreased eye pain. Continue current treatment plan. Next assessment after infusion #5.
+                    </div>
+                </div>
+
+                <div class="note-item">
+                    <div class="note-header">
+                        <span class="note-author">Infusion Nurse - RN</span>
+                        <span class="note-date">Feb 26, 2026</span>
+                    </div>
+                    <div class="note-content">
+                        TEPEZZA infusion #3 completed without complications. Vital signs stable throughout 90-minute infusion. No adverse reactions noted. Patient tolerated treatment well. Pre-medications administered as ordered. Post-infusion monitoring complete, patient discharged in stable condition.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="mailto:drzaldivar@ncsurgery.com?subject=TED%20Patient%20Portal%20-%20Question&body=Patient%20ID%3A%20TED-2024-00847%0A%0AHello%2C%0A%0A" class="btn btn-primary">
+                    💬 Message Provider
+                </a>
+                <button class="btn btn-secondary">📥 Download Medical Records</button>
+                <button class="btn btn-outline">🖨️ Print Summary</button>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
